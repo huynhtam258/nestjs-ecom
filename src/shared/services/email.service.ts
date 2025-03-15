@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common'
+import fs from 'fs'
+import path from 'path'
 import { Resend } from 'resend'
 import envConfig from 'src/shared/config'
 
+
+const otpTemplate = fs.readFileSync(path.resolve('src/shared/email-templates/otp.html'), { encoding: 'utf-8' })
 @Injectable()
 export class EmailService {
   private resend: Resend
@@ -10,11 +14,12 @@ export class EmailService {
   }
 
   sendOTP(payload: { email: string; code: string }) {
+    const subject = 'Mã OTP'
     return this.resend.emails.send({
-      from: 'Ecommerce <onboarding@resend.dev>',
+      from: 'Ecommerce <no-reply@gocnhinkhacbiet.tech>',
       to: [payload.email],
-      subject: 'Mã OTP',
-      html: `<strong>${payload.code}</strong>`,
+      subject,
+      html: otpTemplate.replace('{{subject}}', subject).replace('{{code}}', payload.code),
     })
   }
 }

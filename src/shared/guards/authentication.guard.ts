@@ -8,9 +8,7 @@ import { APIKeyGuard } from 'src/shared/guards/api-key.guard'
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
   private readonly authTypeGuardMap: Record<string, CanActivate> = {
-    //@ts-expect-error
     [AuthType.Bearer]: this.accessTokenGuard,
-    //@ts-expect-error
     [AuthType.APIKey]: this.apiKeyGuard,
     [AuthType.None]: { canActivate: () => true },
   }
@@ -23,9 +21,11 @@ export class AuthenticationGuard implements CanActivate {
     const authTypeValue = this.reflector.getAllAndOverride<AuthTypeDecoratorPayload | undefined>(AUTH_TYPE_KEY, [
       context.getHandler(),
       context.getClass(),
-    ]) ?? { authTypes: [AuthType.None], options: { condition: ConditionGuard.And } }
+    ]) ?? { authTypes: [AuthType.Bearer], options: { condition: ConditionGuard.And } }
+
     const guards = authTypeValue.authTypes.map((authType) => this.authTypeGuardMap[authType])
     let error = new UnauthorizedException()
+
     if (authTypeValue.options.condition === ConditionGuard.Or) {
       for (const instance of guards) {
         const canActivate = await Promise.resolve(instance.canActivate(context)).catch((err) => {

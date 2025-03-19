@@ -26,6 +26,17 @@ export class AuthRepository {
     })
   }
 
+  async createUserIncludeRole(
+    user: Pick<UserType, 'email' | 'name' | 'password' | 'phoneNumber' | 'avatar' | 'roleId'>
+  ): Promise<UserType & { role: RoleType}> {
+    return this.prismaService.user.create({
+      data: user,
+      include: {
+        role: true
+      }
+    })
+  }
+
   async createVerificationCode(
     payload: Pick<VerificationCodeType, 'email' | 'type' | 'code' | 'expiresAt'>,
   ): Promise<VerificationCodeType> {

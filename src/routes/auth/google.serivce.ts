@@ -8,6 +8,7 @@ import { HashingService } from 'src/shared/services/hashing.service'
 import { RolesService } from './roles.service'
 import { AuthService } from './auth.service'
 import { v4 as uuidv4 } from 'uuid'
+import { GoogleUserInfoError } from './error.model'
 
 @Injectable()
 export class GoogleService {
@@ -68,7 +69,7 @@ export class GoogleService {
       })
       const { data } = await oauth2.userinfo.get()
       if (!data.email) {
-        throw new Error('Không thể lấy thông tin người dùng từ google')
+        throw GoogleUserInfoError
       }
 
       let user = await this.authRepository.findUniqueUserIncludeRole({

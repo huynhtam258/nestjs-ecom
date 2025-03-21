@@ -80,7 +80,7 @@ export class GoogleService {
         const clientRoleId = await this.rolesService.getClientRoleId()
         const randomPassword = uuidv4()
         const hashedPassword = await this.hashingService.hash(randomPassword)
-        user = await this.authRepository.createUserIncludeRole({
+        user = await this.authRepository.createUserInclueRole({
           email: data.email,
           name: data.name ?? '',
           password: hashedPassword,

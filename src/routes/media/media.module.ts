@@ -5,7 +5,8 @@ import path from "path";
 import { generateRandomFilename } from "src/shared/helpers";
 import { MediaController } from "./media.controller";
 import { existsSync, mkdirSync } from "fs";
-const UPLOAD_DIR = path.resolve('upload')
+import { UPLOAD_DIR } from "src/shared/constants/other.constant";
+
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, UPLOAD_DIR)
